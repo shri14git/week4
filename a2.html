@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form, input, button {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #searchInput {
+            margin-top: 20px;
+        }
+
+        #noResultsMessage {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Library Management System</h1>
+    
+    <!-- Form to add books -->
+    <form id="addBookForm">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="author" placeholder="Author" required>
+        <input type="number" id="pages" placeholder="Pages" required>
+        <input type="text" id="genre" placeholder="Genre" required>
+        <button type="submit">Add Book</button>
+    </form>
+
+    <!-- Search input field -->
+    <input type="text" id="searchInput" placeholder="Search by Title">
+
+    <!-- Display area for books -->
+    <div id="bookList"></div>
+
+    <!-- Message for no results found -->
+    <p id="noResultsMessage" style="display: none;">No books found matching your search.</p>
+
+    <script>
+        // Sample array of books
+        let books = [
+            { title: "Book 1", author: "Author 1", pages: 200, genre: "Fiction" },
+            { title: "Book 2", author: "Author 2", pages: 250, genre: "Non-Fiction" },
+            { title: "Book 3", author: "Author 3", pages: 180, genre: "Thriller" }
+        ];
+
+        // Function to render books
+        function renderBooks(bookArray) {
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+            
+            bookArray.forEach(book => {
+                const bookDiv = document.createElement("div");
+                bookDiv.classList.add("book");
+                bookDiv.innerHTML = `<p>Title: ${book.title}</p>
+                                     <p>Author: ${book.author}</p>
+                                     <p>Pages: ${book.pages}</p>
+                                     <p>Genre: ${book.genre}</p>`;
+                bookList.appendChild(bookDiv);
+            });
+        }
+
+        // Function to search for books
+        function searchBooks(title) {
+            const searchResult = books.filter(book => book.title.toLowerCase().includes(title.toLowerCase()));
+            renderBooks(searchResult);
+            if (searchResult.length === 0) {
+                document.getElementById("noResultsMessage").style.display = "block";
+            } else {
+                document.getElementById("noResultsMessage").style.display = "none";
+            }
+        }
+
+        // Event listener for form submission to add books
+        document.getElementById("addBookForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const title = document.getElementById("title").value;
+            const author = document.getElementById("author").value;
+            const pages = document.getElementById("pages").value;
+            const genre = document.getElementById("genre").value;
+            books.push({ title, author, pages, genre });
+            renderBooks(books);
+            this.reset();
+        });
+
+        // Event listener for search input field
+        document.getElementById("searchInput").addEventListener("input", function(event) {
+            searchBooks(event.target.value);
+        });
+
+        // Initial rendering of books
+        renderBooks(books);
+    </script>
+</body>
+</html>
