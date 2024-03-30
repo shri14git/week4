@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Application</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #timer, #score, #questionNumber {
+        margin-bottom: 10px;
+    }
+
+    #options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .option {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .option:hover {
+        background-color: #f0f0f0;
+    }
+
+    #submitBtn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    #submitBtn:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div id="timer">Time Remaining: <span id="time">10</span> seconds</div>
+    <div id="score">Score: <span id="scoreValue">0</span></div>
+    <div id="questionNumber">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">5</span></div>
+    <div id="question">Question goes here</div>
+    <div id="options">
+        <button class="option" onclick="checkAnswer(this)">Option 1</button>
+        <button class="option" onclick="checkAnswer(this)">Option 2</button>
+        <button class="option" onclick="checkAnswer(this)">Option 3</button>
+        <button class="option" onclick="checkAnswer(this)">Option 4</button>
+    </div>
+    <button id="submitBtn" onclick="nextQuestion()">Submit</button>
+</div>
+
+<script>
+    // Sample quiz data
+    const quizData = [
+        {
+            question: "What is the capital of France?",
+            options: ["London", "Paris", "Rome", "Berlin"],
+            correctAnswer: "Paris"
+        },
+        {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Mars", "Venus", "Jupiter", "Saturn"],
+            correctAnswer: "Mars"
+        },
+        // Add more questions here
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timeLeft = 10;
+    let timerInterval;
+
+    // Function to display current question
+    function displayQuestion() {
+        const currentQuestion = quizData[currentQuestionIndex];
+        document.getElementById("question").textContent = currentQuestion.question;
+        document.querySelectorAll(".option").forEach((option, index) => {
+            option.textContent = currentQuestion.options[index];
+            option.disabled = false; // Enable option buttons
+        });
+    }
+
+    // Function to check user's answer
+    function checkAnswer(selectedOption) {
+        const currentQuestion = quizData[currentQuestionIndex];
+        const selectedAnswer = selectedOption.textContent;
+        if (selectedAnswer === currentQuestion.correctAnswer) {
+            score++;
+            document.getElementById("scoreValue").textContent = score;
+        }
+        document.querySelectorAll(".option").forEach(option => {
+            option.disabled = true; // Disable option buttons after selecting an answer
+        });
+    }
+
+    // Function to move to the next question
+    function nextQuestion() {
+        clearInterval(timerInterval);
+        if (currentQuestionIndex < quizData.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion();
+            timeLeft = 10; // Reset timer
+            document.getElementById("time").textContent = timeLeft;
+            startTimer();
+        } else {
+            // End of quiz
+            alert("Quiz completed! Your score is " + score);
+        }
+    }
+
+    // Function to start the timer
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById("time").textContent = timeLeft;
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                nextQuestion();
+            }
+        }, 1000);
+    }
+
+    // Initial setup
+    displayQuestion();
+    startTimer();
+</script>
+</body>
+</html>
